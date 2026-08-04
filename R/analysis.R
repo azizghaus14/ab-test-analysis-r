@@ -16,9 +16,12 @@ conv_A <- mean(df$converted[df$group == "A"])
 conv_B <- mean(df$converted[df$group == "B"])
 lift   <- (conv_B - conv_A) / conv_A
 
-successes <- c(sum(df$converted[df$group == "A"]),
-               sum(df$converted[df$group == "B"]))
-trials    <- c(sum(df$group == "A"), sum(df$group == "B"))
+# Treatment first, so prop.test's confidence interval is (B - A) -- matching
+# how the difference is reported. Passing A first returns (A - B) and flips
+# the interval's sign.
+successes <- c(sum(df$converted[df$group == "B"]),
+               sum(df$converted[df$group == "A"]))
+trials    <- c(sum(df$group == "B"), sum(df$group == "A"))
 prop_test <- prop.test(successes, trials, correct = FALSE)
 
 ## ---- 2. Revenue per user: Welch's t-test ----------------------------------
